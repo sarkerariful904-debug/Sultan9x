@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AS VIP AI PRO</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #030305;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+}
+
+#background-site {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    z-index: 1;
+}
+
+#ai-box {
+    width: 140px;
+    padding: 15px 12px;
+    border-radius: 20px;
+    background: rgba(5, 5, 8, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(255, 49, 49, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.05);
+    position: fixed;
+    top: 40px;
+    left: 20px;
+    user-select: none;
+    touch-action: none;
+    z-index: 9999;
+    transition: box-shadow 0.3s ease;
+}
+
+#ai-box:active {
+    box-shadow: 0 0 35px rgba(255, 49, 49, 0.6);
+    cursor: grabbing;
+}
+
+.brand {
+    font-size: 11px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #FFD700;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+    letter-spacing: 1px;
+}
+
+input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    outline: none;
+    font-size: 11px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: #ff3131;
+    box-shadow: 0 0 10px rgba(255, 49, 49, 0.4);
+}
+
+button {
+    width: 100%;
+    padding: 8px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #ff3131, #b31414);
+    color: white;
+    font-weight: bold;
+    font-size: 11px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(255, 49, 49, 0.3);
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(255, 49, 49, 0.4);
+}
+
+#main {
+    display: none;
+}
+
+#signal {
+    font-size: 22px;
+    font-weight: 900;
+    margin: 5px 0;
+    text-shadow: 0 0 10px currentColor;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.info-row { 
+    display: flex; 
+    justify-content: space-around; 
+    align-items: center; 
+    margin: 8px 0;
+    background: rgba(255,255,255,0.03);
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+.num { 
+    font-size: 15px; 
+    font-weight: 800; 
+    color: #00ffcc; 
+    text-shadow: 0 0 8px rgba(0, 255, 204, 0.4);
+}
+.dot { 
+    width: 14px; 
+    height: 14px; 
+    border-radius: 50%; 
+    border: 1.2px solid rgba(255,255,255,0.4); 
+    transition: all 0.5s ease;
+}
+
+#timer {
+    font-size: 11px;
+    margin-top: 4px;
+    color: #00e5ff;
+    font-family: monospace;
+    font-weight: bold;
+    background: rgba(0, 229, 255, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.status-container {
+    font-size: 9px;
+    color: #cccccc;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.status-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #39FF14;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 4px;
+    box-shadow: 0 0 8px #39FF14;
+}
+</style>
+</head>
+
+<body>
+
+<iframe id="background-site" src="https://dkwin9.com/#/register?invitationCode=526831047336"></iframe>
+
+<div id="ai-box">
+    <div id="lock">
+        <div class="brand">AS VIP AI</div>
+        <input id="pass" type="password" placeholder="PASSWORD" autocomplete="off">
+        <button onclick="unlock()">LOGIN</button>
+    </div>
+
+    <div id="main">
+        <div class="brand">AS VIP AI</div>
+        <div id="signal">...</div>
+        
+        <div class="info-row">
+            <div id="n1" class="num">?</div>
+            <div id="color-dot" class="dot"></div>
+            <div id="n2" class="num">?</div>
+        </div>
+
+        <div id="timer">00:30</div>
+        <div class="status-container">
+            <span class="status-dot"></span> LIVE SYNC
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById("pass").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        unlock();
+    }
+});
+
+function unlock(){
+    let p = document.getElementById("pass").value;
+    if(p === "AS999"){
+        document.getElementById("lock").style.display = "none";
+        document.getElementById("main").style.display = "block";
+        startSignal();
+    } else {
+        alert("Wrong Password! Try again.");
+    }
+}
+
+// নতুন উন্নত মাস্টার লজিক হিস্ট্রি এবং প্যাটার্ন ফিল্টার
+let history = [];
+
+function generate(){
+    const types = ["BIG", "SMALL"];
+    let next;
+
+    // ১. অল্টারনেট মার্কেট ট্রেন্ড চেক (BIG -> SMALL -> BIG -> SMALL)
+    if (history.length >= 3 && history[0] !== history[1] && history[1] !== history[2]) {
+        next = history[0]; // ট্রেন্ড ব্রেক না করে অল্টারনেটিং প্যাটার্ন ধরে রাখার চেষ্টা
+    } 
+    // ২. কোড ১-এর অরিজিনাল লজিক (টানা ২ বার এক আসলে ৩ নম্বর বার রিভার্স করা)
+    else if(history.length >= 2 && history[0] === history[1]) {
+        next = (history[0] === "BIG") ? "SMALL" : "BIG";
+    } 
+    // ৩. লম্বা ড্রাগন ট্রেন্ড প্রোটেকশন ফিল্টার (টানা ৪ বার এক আসলে ট্রেন্ড ব্রেক করার লজিক)
+    else if(history.length >= 4 && history[0] === history[1] && history[1] === history[2] && history[2] === history[3]) {
+        next = (history[0] === "BIG") ? "SMALL" : "BIG";
+    }
+    // ৪. যদি কোনো নির্দিষ্ট প্যাটার্ন ম্যাচ না করে, তবে সাধারণ র্যান্ডম সিগন্যাল
+    else {
+        next = types[Math.floor(Math.random() * 2)];
+    }
+
+    history.unshift(next);
+    if(history.length > 10) history.pop(); // মেমোরি এবং প্যাটার্ন ট্র্যাকিং ১০ পর্যন্ত বাড়ানো হলো
+
+    // কোড ১ এর র্যান্ডম নম্বর জেনারেশন ফর্মুলা
+    let n1, n2;
+    if(next === "BIG") {
+        n1 = Math.floor(Math.random() * 5) + 5; 
+        do { n2 = Math.floor(Math.random() * 5) + 5; } while (n1 === n2);
+    } else {
+        n1 = Math.floor(Math.random() * 5); 
+        do { n2 = Math.floor(Math.random() * 5); } while (n1 === n2);
+    }
+
+    // UI আপডেট
+    let s = document.getElementById("signal");
+    s.innerText = next;
+    s.style.color = (next === "BIG") ? "#FFD700" : "#39FF14";
+    
+    document.getElementById("n1").innerText = n1;
+    document.getElementById("n2").innerText = n2;
+
+    // কোড ১ এর অরিজিনাল কালার ফর্মুলা (০ ও ৫ স্পেশাল এবং জোড়/বিজোড় চেক)
+    let c = (n1 === 0 || n1 === 5) ? "#FF3131" : (n1 % 2 === 0 ? "#FF3131" : "#39FF14");
+    const dot = document.getElementById("color-dot");
+    dot.style.backgroundColor = c;
+    dot.style.boxShadow = `0 0 12px ${c}`;
+}
+
+function startSignal(){
+    updateTimer();
+    setInterval(updateTimer, 1000);
+    generate();
+}
+
+function updateTimer() {
+    let sec = new Date().getSeconds();
+    let rem = 30 - (sec % 30);
+    
+    if (rem === 30) {
+        generate();
+    }
+    
+    document.getElementById("timer").innerText = "00:" + (rem < 10 ? "0" : "") + rem;
+}
+
+/* ড্র্যাগিং সিস্টেম */
+const box = document.getElementById("ai-box");
+let isDragging = false;
+let currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+
+box.addEventListener("mousedown", dragStart);
+box.addEventListener("touchstart", dragStart, { passive: true });
+document.addEventListener("mousemove", drag);
+document.addEventListener("touchmove", drag, { passive: false });
+document.addEventListener("mouseup", dragEnd);
+document.addEventListener("touchend", dragEnd);
+
+function dragStart(e) {
+    if (e.type === "touchstart") {
+        initialX = e.touches[0].clientX - xOffset;
+        initialY = e.touches[0].clientY - yOffset;
+    } else {
+        initialX = e.clientX - xOffset;
+        initialY = e.clientY - yOffset;
+    }
+    
+    if (e.target === box || e.target.classList.contains("brand") || e.target.id === "main" || e.target.id === "lock" || e.target.id === "signal" || e.target.id === "timer" || e.target.classList.contains("status-container") || e.target.classList.contains("info-row") || e.target.classList.contains("num") || e.target.classList.contains("dot")) {
+        isDragging = true;
+    }
+}
+
+function drag(e) {
+    if (isDragging) {
+        if (e.type === "touchmove") {
+            e.preventDefault();
+            currentX = e.touches[0].clientX - initialX;
+            currentY = e.touches[0].clientY - initialY;
+        } else {
+            currentX = e.clientX - initialX;
+            currentY = e.clientY - initialY;
+        }
+        xOffset = currentX;
+        yOffset = currentY;
+        setTranslate(currentX, currentY, box);
+    }
+}
+
+function setTranslate(xPos, yPos, el) {
+    el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+}
+
+function dragEnd() {
+    initialX = currentX;
+    initialY = currentY;
+    isDragging = false;
+}
+</script>
+</body>
+</html>
